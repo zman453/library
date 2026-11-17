@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mike's Library</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#141c17">
+<style>
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#141c17;color:#efeae0;font:17px/1.5 system-ui,Roboto,sans-serif;text-align:center}
+main{padding:24px;max-width:360px}
+img{width:120px;height:120px;border-radius:28px}
+h1{font-family:Georgia,serif;font-weight:500;font-size:30px;margin:16px 0 4px}
+p{color:#a3aea6;margin:0 0 20px}
+button,a.btn{display:inline-block;min-height:48px;padding:12px 24px;border-radius:999px;border:0;background:#c3e4a6;color:#16210f;font:600 17px system-ui,sans-serif;text-decoration:none;cursor:pointer}
+#tip{display:none;font-size:15px}
+</style></head>
+<body><main>
+<img src="icon-512.png" alt="">
+<h1>Mike's Library</h1>
+<p id="msg">Opening your Library…</p>
+<button id="install" hidden>Install app</button>
+<p id="tip">In Chrome, tap ⋮ then <b>Install app</b> (or <b>Add to Home screen → Install</b>).</p>
+<p><a class="btn" id="open" href="https://claude.ai/artifact/CZ5h6oSLH8WAwETHuQ23X7">Open Library</a></p>
+</main>
+<script>
+const LIB="https://claude.ai/artifact/CZ5h6oSLH8WAwETHuQ23X7";
+const standalone=matchMedia('(display-mode: standalone)').matches;
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+if(standalone){ location.replace(LIB); }
+else{
+  document.getElementById('msg').textContent="Install this once to get a home-screen icon with no Chrome badge.";
+  document.getElementById('tip').style.display='block';
+  let ev; const b=document.getElementById('install');
+  addEventListener('beforeinstallprompt',e=>{e.preventDefault();ev=e;b.hidden=false;document.getElementById('tip').style.display='none'});
+  b.onclick=async()=>{if(!ev)return;ev.prompt();await ev.userChoice;b.hidden=true};
+  addEventListener('appinstalled',()=>{document.getElementById('msg').textContent="Installed. Use the new icon on your home screen."});
+}
+</script>
+</body></html>
